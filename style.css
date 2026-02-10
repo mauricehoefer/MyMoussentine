@@ -10,6 +10,14 @@ body {
   min-height: 100vh;
 }
 
+body.is-complete .container {
+  display: none;
+}
+
+body.is-complete .end-screen {
+  display: grid;
+}
+
 body::before {
   content: "";
   position: fixed;
@@ -29,7 +37,7 @@ body::before {
   max-width: 900px;
   margin: 0 auto;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .valentine-header {
@@ -74,23 +82,84 @@ h1 {
 .background-layer {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
 }
 
 .foreground-layer {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
 }
 
 .progress-layer {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   overflow: hidden;
+}
+
+.end-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  display: none;
+  place-items: center;
+  padding: 24px;
+}
+
+.end-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 170, 190, 0.6);
+  border-radius: 24px;
+  padding: 32px 24px;
+  box-shadow: 0 24px 60px rgba(130, 16, 45, 0.2);
+  max-width: 520px;
+  width: min(90vw, 520px);
+}
+
+.end-buttons {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.end-button {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transform: none;
+}
+
+.yes-button {
+  background: linear-gradient(135deg, #ffb3c7, #ff4d6d);
+  color: #3b0a1a;
+  box-shadow: 0 12px 24px rgba(185, 23, 59, 0.3);
+}
+
+.no-button {
+  position: relative;
+  background: #f4f4f4;
+  color: #6f1630;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  z-index: 9;
+}
+
+.no-button.is-teleporting {
+  position: fixed;
+  z-index: 9;
+}
+
+.floating-yes {
+  position: fixed;
+  z-index: 7;
 }
 
 .progress-fill {
@@ -99,8 +168,33 @@ h1 {
   right: 0;
   bottom: 0;
   height: 0%;
-  background: linear-gradient(180deg, rgba(255, 76, 109, 0.22), rgba(255, 76, 109, 0.08));
+  background: linear-gradient(180deg, rgba(255, 76, 109, 0.45), rgba(255, 76, 109, 0.18));
   transition: height 250ms ease-out;
+  overflow: hidden;
+}
+
+.progress-fill::before {
+  content: "";
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  top: -18px;
+  height: 36px;
+  background:
+    radial-gradient(40px 18px at 20px 18px, rgba(255, 255, 255, 0.5) 50%, transparent 52%),
+    radial-gradient(40px 18px at 60px 18px, rgba(255, 255, 255, 0.3) 50%, transparent 52%);
+  background-size: 80px 36px;
+  animation: wave-drift 3s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes wave-drift {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-80px);
+  }
 }
 
 /* Herz */
@@ -212,16 +306,37 @@ h1 {
   color: #8f1234;
 }
 
+.upgrades-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: stretch;
+  justify-content: center;
+}
+
 .upgrades {
   margin-top: 18px;
+  flex: 1 1 320px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.75);
   border: 1px solid rgba(255, 170, 190, 0.6);
   border-radius: 16px;
   box-shadow: 0 12px 26px rgba(130, 16, 45, 0.12);
+  text-align: center;
 }
 
 .autoclicker {
+  margin-top: 18px;
+  flex: 1 1 320px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 170, 190, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 12px 26px rgba(130, 16, 45, 0.12);
+  text-align: center;
+}
+
+.cosmetics {
   margin-top: 16px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.75);
@@ -230,7 +345,76 @@ h1 {
   box-shadow: 0 12px 26px rgba(130, 16, 45, 0.12);
 }
 
-.upgrades h2 {
+.cosmetics-hint {
+  margin: 0 0 12px;
+  color: #6f1630;
+}
+
+.cosmetics-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.cosmetic-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 170, 190, 0.5);
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmetic-card.is-locked {
+  opacity: 0.75;
+  filter: grayscale(0.6);
+}
+
+.cosmetic-card.is-locked::after {
+  content: "Gesperrt";
+  position: absolute;
+  inset: auto 10px 10px 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: rgba(255, 77, 109, 0.15);
+  color: #8f1234;
+}
+
+.cosmetic-card.is-unlockable::after {
+  content: "Freischaltbar";
+  background: rgba(255, 77, 109, 0.35);
+  color: #ffffff;
+}
+
+.cosmetic-card.is-active {
+  border-color: rgba(255, 77, 109, 0.9);
+  box-shadow: 0 10px 20px rgba(185, 23, 59, 0.2);
+}
+
+.cosmetic-preview {
+  width: 72px;
+  height: 72px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.cosmetic-name {
+  font-weight: 600;
+  color: #7b1230;
+}
+
+.cosmetic-progress {
+  font-size: 0.85rem;
+  color: #6f1630;
+}
+
+.upgrades h2,
+.autoclicker h2 {
   margin: 0 0 10px;
   font-size: 1.1rem;
   color: #8f1234;
@@ -247,6 +431,12 @@ h1 {
   box-shadow: 0 10px 20px rgba(185, 23, 59, 0.25);
 }
 
+.upgrade-button.is-unlock {
+  background: linear-gradient(135deg, #ff2e63, #b51237);
+  color: #fff;
+  box-shadow: 0 12px 22px rgba(185, 23, 59, 0.45);
+}
+
 .upgrade-button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
@@ -256,6 +446,28 @@ h1 {
 .upgrade-status {
   margin: 10px 0 0;
   color: #6f1630;
+}
+
+.test-panel {
+  margin: 20px auto 0;
+  max-width: 420px;
+  display: grid;
+  gap: 8px;
+  text-align: center;
+  color: #6f1630;
+}
+
+.test-input {
+  border: 1px solid rgba(255, 170, 190, 0.6);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.test-input:focus {
+  outline: 2px solid rgba(255, 77, 109, 0.4);
+  outline-offset: 2px;
 }
 
 /* Responsive Design */

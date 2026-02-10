@@ -3,41 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Valentine Klickspiel</title>
+  <title>My Moussentine</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <audio id="bg-music" src="sounds/background.wav" loop></audio>
   <div id="background-layer" class="background-layer" aria-hidden="true"></div>
-  <div id="foreground-layer" class="foreground-layer" aria-hidden="true"></div>
   <div id="progress-layer" class="progress-layer" aria-hidden="true">
     <div id="progress-fill" class="progress-fill"></div>
   </div>
+  <div id="end-screen" class="end-screen" hidden>
+    <div class="end-card">
+      <h1>Willst du meine Moussentine sein?</h1>
+      <div id="end-buttons" class="end-buttons">
+        <button id="yes-button" class="end-button yes-button" type="button">Ja</button>
+        <button id="no-button" class="end-button no-button" type="button">Nein</button>
+      </div>
+    </div>
+  </div>
   <div class="container">
     <header class="valentine-header">
-      <h1>Do you want to be my Valentine?</h1>
-      <p class="subtitle">Sammle alle meine Herzis!</p>
+      <h1>Do you want to be my Moussentine?</h1>
+      <p class="subtitle">Sammle alle Herzis!</p>
     </header>
     <div id="game-area">
+      <div id="foreground-layer" class="foreground-layer" aria-hidden="true"></div>
       <button id="heart" class="heart-button" type="button" aria-label="Herz klicken"></button>
     </div>
     <div class="score">
       <p>Punkte: <span id="score">0</span></p>
-      <p class="goal">Ziel: <span id="goal-score">1.000.000</span></p>
+      <p class="goal">Ziel: <span id="goal-current">0</span>/10.000</p>
     </div>
-    <section class="upgrades" aria-live="polite">
-      <h2>Upgrades</h2>
-      <button id="upgrade-button" class="upgrade-button" type="button">
-        Upgrade kaufen (Kosten: <span id="upgrade-cost">10</span>)
-      </button>
-      <p class="upgrade-status">Level: <span id="upgrade-level">0</span></p>
-    </section>
-    <section class="autoclicker" aria-live="polite">
-      <h2>Auto-Klicker</h2>
-      <button id="auto-upgrade-button" class="upgrade-button" type="button">
-        Auto-Klicker kaufen (Kosten: <span id="auto-upgrade-cost">50</span>)
-      </button>
-      <p class="upgrade-status">Auto-Level: <span id="auto-level">0</span></p>
-      <p class="upgrade-status">Auto/Klicks: <span id="auto-rate">0</span> / Sek</p>
+    <div class="upgrades-row">
+      <section class="upgrades" aria-live="polite">
+        <h2>Hand-Herzen</h2>
+        <button id="upgrade-button" class="upgrade-button" type="button">
+          Upgrade kaufen (Kosten: <span id="upgrade-cost">10</span> Herzen)
+        </button>
+        <p class="upgrade-status">Level: <span id="upgrade-level">0</span></p>
+        <p class="upgrade-status">Herzen/Klick: <span id="click-rate">1</span></p>
+        <p class="upgrade-status">Nächste Stufe: <span id="click-rate-next">2</span> Klicks</p>
+      </section>
+      <section id="autoclicker-section" class="autoclicker" aria-live="polite">
+        <h2>Auto-Herzen</h2>
+        <button id="auto-upgrade-button" class="upgrade-button" type="button">
+          Auto-Klicker kaufen (Kosten: <span id="auto-upgrade-cost">50</span> Herzen)
+        </button>
+        <p class="upgrade-status">Level: <span id="auto-level">0</span></p>
+        <p class="upgrade-status">Herzen/Sekunde: <span id="auto-rate">0</span> / Sek</p>
+        <p class="upgrade-status">Nächste Stufe: <span id="auto-rate-next">2</span> / Sek</p>
+      </section>
+    </div>
+    <section id="cosmetics-section" class="cosmetics" aria-live="polite" hidden>
+      <h2>Herz-Skins</h2>
+      <p class="cosmetics-hint">Freischaltung mit gesamt gesammelten Herzen.</p>
+      <div id="cosmetics-list" class="cosmetics-list"></div>
     </section>
   </div>
   <script src="script.js"></script>
