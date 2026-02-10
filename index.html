@@ -1,45 +1,22 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test HTML</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine Klickspiel</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <h1>Willkommen zu meiner Testseite!</h1>
-    <p>Dies ist ein einfacher HTML-Test mit einer kleinen Interaktion.</p>
-    <button onclick="zeigeNachricht()">Klick mich!</button>
-
-    <script>
-        function zeigeNachricht() {
-            alert("Hallo! Du hast den Button geklickt.");
-        }
-    </script>
+  <div class="container">
+    <h1>Valentine Klickspiel</h1>
+    <p>Klicke auf das Herz, um Punkte zu sammeln!</p>
+    <div id="game-area">
+      <div id="heart"></div>
+    </div>
+    <div class="score">
+      <p>Punkte: <span id="score">0</span></p>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
-
 </html>
