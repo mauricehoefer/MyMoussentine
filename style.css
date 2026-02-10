@@ -1,61 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Work+Sans:wght@400;600&display=swap');
+
 /* Allgemeine Stile */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #ffe6e6;
-  color: #333;
+  font-family: "Work Sans", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #fff5f7 0%, #ffd6df 45%, #ffb3c7 100%);
+  color: #3b0a1a;
   text-align: center;
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 10% 15%, rgba(255, 255, 255, 0.6) 0 120px, transparent 140px),
+    radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.5) 0 160px, transparent 190px),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.4) 0 180px, transparent 210px);
+  opacity: 0.7;
 }
 
 /* Container */
 .container {
-  padding: 20px;
+  padding: 28px 20px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
-/* Überschrift */
+.valentine-header {
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.8), rgba(255, 228, 236, 0.8));
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 18px 16px;
+  box-shadow: 0 18px 40px rgba(130, 16, 45, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+/* Ueberschrift */
 h1 {
-  color: #ff4d4d;
-  font-size: 2rem;
+  font-family: "Playfair Display", "Times New Roman", serif;
+  color: #b2173b;
+  font-size: 2.4rem;
+  margin: 6px 0 8px;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #6f1630;
 }
 
 /* Spielbereich */
 #game-area {
   position: relative;
+  display: grid;
+  place-items: center;
   width: 100%;
-  height: 400px;
-  margin: 20px auto;
-  background-color: #fff;
-  border: 2px solid #ffcccc;
-  border-radius: 10px;
+  height: 420px;
+  margin: 24px auto 18px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(255, 240, 245, 0.9));
+  border: 2px solid rgba(255, 170, 190, 0.7);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(130, 16, 45, 0.18);
+}
+
+.background-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.foreground-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.progress-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
   overflow: hidden;
 }
 
-/* Herz */
-#heart {
+.progress-fill {
   position: absolute;
-  width: 50px;
-  height: 50px;
-  background-color: #ff4d4d;
-  clip-path: polygon(50% 0%, 100% 35%, 85% 100%, 50% 75%, 15% 100%, 0% 35%);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0%;
+  background: linear-gradient(180deg, rgba(255, 76, 109, 0.22), rgba(255, 76, 109, 0.08));
+  transition: height 250ms ease-out;
+}
+
+/* Herz */
+.heart-button {
+  position: relative;
+  width: 440px;
+  height: 440px;
+  background: transparent;
+  background-image: url("pictures/hearth_open.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  transform: translateZ(0);
   cursor: pointer;
-  animation: pulse 1s infinite;
+  z-index: 2;
+}
+
+.heart-button:hover {
+  transform: scale(1.05);
+}
+
+.heart-button:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 4px;
+}
+
+.burst-heart {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  background-image: url("pictures/hearth_open.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: float-up 900ms ease-out forwards;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.background-heart {
+  position: absolute;
+  background-image: url("pictures/hearth_open.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.7;
+  animation: drift-up 4.5s ease-out forwards;
+  pointer-events: none;
 }
 
 /* Animation für das Herz */
+.is-pulsing {
+  animation: pulse 350ms ease-out;
+}
+
 @keyframes pulse {
-  0%, 100% {
+  0% {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.6);
+  }
+}
+
+@keyframes drift-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  20% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) scale(1.2);
   }
 }
 
 /* Punktestand */
 .score {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  color: #ff4d4d;
+  margin-top: 10px;
+  font-size: 1.15rem;
+  color: #b2173b;
+  background: rgba(255, 255, 255, 0.8);
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(130, 16, 45, 0.15);
+}
+
+.goal {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  color: #8f1234;
+}
+
+.upgrades {
+  margin-top: 18px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 170, 190, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 12px 26px rgba(130, 16, 45, 0.12);
+}
+
+.autoclicker {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 170, 190, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 12px 26px rgba(130, 16, 45, 0.12);
+}
+
+.upgrades h2 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  color: #8f1234;
+}
+
+.upgrade-button {
+  border: none;
+  background: linear-gradient(135deg, #ffb3c7, #ff4d6d);
+  color: #3b0a1a;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(185, 23, 59, 0.25);
+}
+
+.upgrade-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.upgrade-status {
+  margin: 10px 0 0;
+  color: #6f1630;
 }
 
 /* Responsive Design */
@@ -65,11 +265,11 @@ h1 {
   }
 
   #game-area {
-    height: 300px;
+    height: 320px;
   }
 
-  #heart {
-    width: 40px;
-    height: 40px;
+  .heart-button {
+    width: 360px;
+    height: 360px;
   }
 }

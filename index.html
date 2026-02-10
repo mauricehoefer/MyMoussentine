@@ -4,18 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Valentine Klickspiel</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="background-layer" class="background-layer" aria-hidden="true"></div>
+  <div id="foreground-layer" class="foreground-layer" aria-hidden="true"></div>
+  <div id="progress-layer" class="progress-layer" aria-hidden="true">
+    <div id="progress-fill" class="progress-fill"></div>
+  </div>
   <div class="container">
-    <h1>Valentine Klickspiel</h1>
-    <p>Klicke auf das Herz, um Punkte zu sammeln!</p>
+    <header class="valentine-header">
+      <h1>Do you want to be my Valentine?</h1>
+      <p class="subtitle">Sammle alle meine Herzis!</p>
+    </header>
     <div id="game-area">
-      <div id="heart"></div>
+      <button id="heart" class="heart-button" type="button" aria-label="Herz klicken"></button>
     </div>
     <div class="score">
       <p>Punkte: <span id="score">0</span></p>
+      <p class="goal">Ziel: <span id="goal-score">1.000.000</span></p>
     </div>
+    <section class="upgrades" aria-live="polite">
+      <h2>Upgrades</h2>
+      <button id="upgrade-button" class="upgrade-button" type="button">
+        Upgrade kaufen (Kosten: <span id="upgrade-cost">10</span>)
+      </button>
+      <p class="upgrade-status">Level: <span id="upgrade-level">0</span></p>
+    </section>
+    <section class="autoclicker" aria-live="polite">
+      <h2>Auto-Klicker</h2>
+      <button id="auto-upgrade-button" class="upgrade-button" type="button">
+        Auto-Klicker kaufen (Kosten: <span id="auto-upgrade-cost">50</span>)
+      </button>
+      <p class="upgrade-status">Auto-Level: <span id="auto-level">0</span></p>
+      <p class="upgrade-status">Auto/Klicks: <span id="auto-rate">0</span> / Sek</p>
+    </section>
   </div>
   <script src="script.js"></script>
 </body>
