@@ -52,6 +52,7 @@ const bgMusic = document.getElementById('bg-music');
 const upgradeSound = new Audio('sounds/upgrade.wav');
 const skinSound = new Audio('sounds/kiss.wav');
 const clickSound = new Audio('sounds/kiss2.wav');
+const tadaSound = new Audio('sounds/tada.flac');
 const heartSkins = [
   {
     id: 'classic',
@@ -259,6 +260,7 @@ function completeGame() {
   document.body.classList.add('is-complete');
   endScreen.hidden = false;
   progressFill.style.height = '100%';
+  playSound(tadaSound, 0.8);
   if (autoIntervalId) {
     window.clearInterval(autoIntervalId);
   }
