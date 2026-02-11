@@ -10,7 +10,12 @@ let autoUpgradeCost = 50;
 let autoAccumulator = 0;
 let totalHearts = 0;
 let activeBackgroundHearts = 0;
-const maxBackgroundHearts = 250;
+let maxBackgroundHearts = 250;
+let spawnSizeMin = 50;
+let spawnSizeRange = 90;
+let spawnDurationMin = 2500;
+let spawnDurationRange = 1500;
+let spawnMultiplier = 1;
 const clickBase = 1;
 const clickGrowth = 1.65;
 const heartsBase = 3;
@@ -23,7 +28,6 @@ const scoreDisplay = document.getElementById('score');
 const goalCurrentDisplay = document.getElementById('goal-current');
 const gameArea = document.getElementById('game-area');
 const backgroundLayer = document.getElementById('background-layer');
-const foregroundLayer = document.getElementById('foreground-layer');
 const upgradeButton = document.getElementById('upgrade-button');
 const upgradeCostDisplay = document.getElementById('upgrade-cost');
 const upgradeLevelDisplay = document.getElementById('upgrade-level');
@@ -76,6 +80,9 @@ const avoidRadius = 140;
 let gameCompleted = false;
 let noTeleportCount = 0;
 let celebrationIntervalId = null;
+let wasAutoclickerUnlocked = false;
+let wasCosmeticsUnlocked = false;
+let pendingSkinScrollId = null;
 
 function formatNumber(value) {
   return Math.floor(value).toLocaleString('de-DE');
@@ -117,15 +124,16 @@ function applySkin(skinId) {
   heart.style.backgroundImage = `url("${currentHeartOpen}")`;
 }
 
-function playSound(audio) {
+function playSound(audio, volume = 1) {
   const sound = audio.cloneNode();
-  sound.volume = 0.7;
+  sound.volume = volume;
   sound.play().catch(() => {});
 }
 
 function unlockSkin(skinId) {
   if (!unlockedSkins.has(skinId)) {
     unlockedSkins.add(skinId);
+    pendingSkinScrollId = skinId;
     playSound(skinSound);
   }
 }
@@ -154,13 +162,12 @@ function spawnBackgroundHeart() {
   const randomSkin = unlockedList[Math.floor(Math.random() * unlockedList.length)];
   heartElement.style.backgroundImage = `url("${randomSkin.open}")`;
 
-  const targetLayer = Math.random() < 0.4 ? foregroundLayer : backgroundLayer;
-  const areaWidth = targetLayer.clientWidth;
-  const areaHeight = targetLayer.clientHeight;
-  const size = 50 + Math.random() * 90;
+  const areaWidth = backgroundLayer.clientWidth;
+  const areaHeight = backgroundLayer.clientHeight;
+  const size = spawnSizeMin + Math.random() * spawnSizeRange;
   const x = Math.random() * (areaWidth - size);
   const y = Math.random() * (areaHeight - size);
-  const duration = 2500 + Math.random() * 1500;
+  const duration = spawnDurationMin + Math.random() * spawnDurationRange;
 
   heartElement.style.width = `${size}px`;
   heartElement.style.height = `${size}px`;
@@ -168,7 +175,7 @@ function spawnBackgroundHeart() {
   heartElement.style.top = `${y}px`;
   heartElement.style.animationDuration = `${duration}ms`;
 
-  targetLayer.appendChild(heartElement);
+  backgroundLayer.appendChild(heartElement);
   activeBackgroundHearts += 1;
 
   window.setTimeout(() => {
@@ -199,6 +206,14 @@ function updateUpgradeUI() {
   if (cosmeticsUnlocked) {
     updateCosmeticsUI();
   }
+  if (autoclickerUnlocked && !wasAutoclickerUnlocked) {
+    autoclickerSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  if (cosmeticsUnlocked && !wasCosmeticsUnlocked) {
+    cosmeticsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  wasAutoclickerUnlocked = autoclickerUnlocked;
+  wasCosmeticsUnlocked = cosmeticsUnlocked;
 }
 
 function updateProgress() {
@@ -222,13 +237,13 @@ function celebrateYes() {
     window.clearInterval(celebrationIntervalId);
   }
 
-  for (let i = 0; i < 30; i += 1) {
+  for (let i = 0; i < Math.round(30 * spawnMultiplier); i += 1) {
     spawnBackgroundHeart();
   }
 
   let ticks = 0;
   celebrationIntervalId = window.setInterval(() => {
-    for (let i = 0; i < 12; i += 1) {
+    for (let i = 0; i < Math.round(12 * spawnMultiplier); i += 1) {
       spawnBackgroundHeart();
     }
     ticks += 1;
@@ -332,6 +347,7 @@ function updateCosmeticsUI() {
 
     const card = document.createElement('div');
     card.className = 'cosmetic-card';
+    card.dataset.skinId = skin.id;
     if (isActive) {
       card.classList.add('is-active');
     }
@@ -403,6 +419,14 @@ function updateCosmeticsUI() {
     card.appendChild(button);
     cosmeticsList.appendChild(card);
   });
+
+  if (pendingSkinScrollId) {
+    const targetCard = cosmeticsList.querySelector(`[data-skin-id="${pendingSkinScrollId}"]`);
+    if (targetCard) {
+      targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    pendingSkinScrollId = null;
+  }
 }
 
 // Klick-Event für das Herz
@@ -419,7 +443,8 @@ heart.addEventListener('click', (event) => {
   const burstY = event.clientY - areaRect.top;
   spawnBurst(burstX, burstY);
 
-  for (let i = 0; i < heartsPerClick; i += 1) {
+  const heartsThisClick = Math.max(1, Math.round(heartsPerClick * spawnMultiplier));
+  for (let i = 0; i < heartsThisClick; i += 1) {
     spawnBackgroundHeart();
   }
 
@@ -452,7 +477,7 @@ upgradeButton.addEventListener('click', () => {
   upgradeLevel += 1;
   recalcStats();
   upgradeCost = Math.round(upgradeCost * 1.6);
-  playSound(upgradeSound);
+  playSound(upgradeSound, 0.7);
 
   updateScoreDisplay();
   updateTotalDisplay();
@@ -472,7 +497,7 @@ autoUpgradeButton.addEventListener('click', () => {
   autoLevel += 1;
   recalcStats();
   autoUpgradeCost = Math.round(autoUpgradeCost * 1.7);
-  playSound(upgradeSound);
+  playSound(upgradeSound, 0.7);
 
   updateScoreDisplay();
   updateTotalDisplay();
@@ -496,7 +521,7 @@ const autoIntervalId = window.setInterval(() => {
   }
   updateScoreDisplay();
   updateTotalDisplay();
-  const heartsToSpawn = Math.round(autoRate / ticksPerSecond);
+  const heartsToSpawn = Math.round((autoRate / ticksPerSecond) * spawnMultiplier);
   for (let i = 0; i < heartsToSpawn; i += 1) {
     spawnBackgroundHeart();
   }
@@ -510,6 +535,30 @@ updateUpgradeUI();
 updateProgress();
 updateScoreDisplay();
 updateTotalDisplay();
+const mobileQuery = window.matchMedia('(max-width: 600px)');
+function applyPerformanceMode(isMobile) {
+  if (isMobile) {
+    maxBackgroundHearts = 80;
+    spawnSizeMin = 32;
+    spawnSizeRange = 48;
+    spawnDurationMin = 1800;
+    spawnDurationRange = 900;
+    spawnMultiplier = 0.5;
+  } else {
+    maxBackgroundHearts = 250;
+    spawnSizeMin = 50;
+    spawnSizeRange = 90;
+    spawnDurationMin = 2500;
+    spawnDurationRange = 1500;
+    spawnMultiplier = 1;
+  }
+}
+applyPerformanceMode(mobileQuery.matches);
+if (typeof mobileQuery.addEventListener === 'function') {
+  mobileQuery.addEventListener('change', (event) => applyPerformanceMode(event.matches));
+} else if (typeof mobileQuery.addListener === 'function') {
+  mobileQuery.addListener((event) => applyPerformanceMode(event.matches));
+}
 const mailtoLink = 'mailto:mauricehoefer@outlook.de?subject=Deine%20Moussentine&body=Ich%20möchte%20deine%20Moussentine%20sein!%20💖';
 
 endScreen.addEventListener('click', (event) => {
