@@ -22,7 +22,7 @@ const heartsBase = 3;
 const heartsGrowth = 1.45;
 const autoBase = 2;
 const autoGrowth = 1.75;
-const goalScore = 10_000;
+const goalScore = 1_000_000;
 const heart = document.getElementById('heart');
 const scoreDisplay = document.getElementById('score');
 const goalCurrentDisplay = document.getElementById('goal-current');
@@ -61,14 +61,16 @@ const heartSkins = [
     closed: 'pictures/hearth_closed.png',
     cost: 0,
   },
-  { id: '1', name: 'Skin 1', open: 'cosmetics/1.png', closed: 'cosmetics/1.png', cost: 1000 },
-  { id: '2', name: 'Skin 2', open: 'cosmetics/2.png', closed: 'cosmetics/2.png', cost: 10000 },
-  { id: '3', name: 'Skin 3', open: 'cosmetics/3.png', closed: 'cosmetics/3.png', cost: 50000 },
-  { id: '4', name: 'Skin 4', open: 'cosmetics/4.png', closed: 'cosmetics/4.png', cost: 250000 },
-  { id: '5', name: 'Skin 5', open: 'cosmetics/5.png', closed: 'cosmetics/5.png', cost: 500000 },
-  { id: '6', name: 'Skin 6', open: 'cosmetics/6.png', closed: 'cosmetics/6.png', cost: 750000 },
-  { id: '7', name: 'Skin 7', open: 'cosmetics/7.png', closed: 'cosmetics/7.png', cost: 1000000 },
+  { id: '1', name: 'Skin 1', open: 'cosmetics/1.png', closed: 'cosmetics/1.png', cost: 0 },
+  { id: '2', name: 'Skin 2', open: 'cosmetics/2.png', closed: 'cosmetics/2.png', cost: 0 },
+  { id: '3', name: 'Skin 3', open: 'cosmetics/3.png', closed: 'cosmetics/3.png', cost: 0 },
+  { id: '4', name: 'Skin 4', open: 'cosmetics/4.png', closed: 'cosmetics/4.png', cost: 0 },
 ];
+const skinCostSteps = [0, 0.08, 0.18, 0.35, 0.6];
+heartSkins.forEach((skin, index) => {
+  const step = skinCostSteps[index] ?? 1;
+  skin.cost = Math.round(goalScore * step);
+});
 const unlockedSkins = new Set(['classic']);
 let activeSkinId = 'classic';
 let currentHeartOpen = heartSkins[0].open;
@@ -578,6 +580,7 @@ endScreen.addEventListener('click', (event) => {
 });
 noButton.addEventListener('mouseenter', moveNoButton);
 noButton.addEventListener('mousedown', moveNoButton);
+noButton.addEventListener('click', moveNoButton);
 document.addEventListener('click', startBackgroundMusic, { once: true });
 endScreen.addEventListener('mousemove', (event) => {
   if (!gameCompleted) {

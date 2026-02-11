@@ -167,7 +167,7 @@ h1 {
   right: 0;
   bottom: 0;
   height: 0%;
-  background: linear-gradient(180deg, rgba(255, 76, 109, 0.45), rgba(255, 76, 109, 0.18));
+  background: linear-gradient(180deg, rgba(197, 31, 72, 0.55), rgba(185, 23, 59, 0.25));
   transition: height 250ms ease-out;
   overflow: hidden;
 }
